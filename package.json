@@ -1,0 +1,31 @@
+{
+  "name": "ekkojs",
+  "version": "0.0.0",
+  "description": "A NodeJs wrapper for League of Legends API.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CesarPrz/EkkoJS.git"
+  },
+  "keywords": [
+    "league",
+    "of",
+    "legends",
+    "EkkoJS",
+    "nodejs",
+    "api",
+    "wrapper"
+  ],
+  "author": "SSebigo & Cesardo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CesarPrz/EkkoJS/issues"
+  },
+  "homepage": "https://github.com/CesarPrz/EkkoJS#readme",
+  "dependencies": {
+    "axios": "^0.18.0"
+  }
+}
