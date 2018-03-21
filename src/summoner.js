@@ -7,7 +7,13 @@ function getMatch() {
 }
 
 function getLeaguePosition() {
-    console.log("getLeaguePosition");
+    return new Promise ((resolve, reject) => {
+        axios.get("https://euw1.api.riotgames.com/lol/league/v3/positions/by-summoner/" + this.id + "?api_key=" + this.apiKey)
+        .then(response => {
+            this.leaguePosition = response.data;
+            resolve (this);
+        });
+    });
 }
 
 class Summoner {
@@ -54,7 +60,7 @@ class Summoner {
             this.level = data.summonerLevel;
             this.lastEdit = data.revisionDate;
             this.getMatch = getMatch;
-            this.getLeaguePosition = this.getLeaguePosition;
+            this.getLeaguePosition = getLeaguePosition;
             if (infos.leaguePosition == true) {
                 axios.get("https://euw1.api.riotgames.com/lol/league/v3/positions/by-summoner/" + data.id + "?api_key=" + this.apiKey)
                 .then(response => {
