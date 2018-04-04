@@ -1,5 +1,6 @@
 const axios = require('axios');
 const Summoner = require('./summoner.js');
+const ActiveGame = require('./activeGame.js');
 
 var apiKey;
 
@@ -24,8 +25,12 @@ function EkkoJS(key) {
 
 EkkoJS.prototype.getSummoner = function(infos) {
     var newSumm = new Summoner(apiKey);
-    return new Promise ((resolve, reject) => {resolve (newSumm.create(infos))})
-    // return (newSumm.create(infos));
+    return new Promise ((resolve, reject) => {resolve (newSumm.create(infos))});
+}
+
+EkkoJS.prototype.getActiveGame = function(infos) {
+    var newGame = new ActiveGame(apiKey);
+    return new Promise ((resolve, reject) => {resolve (newGame.create(infos))});
 }
 
 module.exports = EkkoJS;

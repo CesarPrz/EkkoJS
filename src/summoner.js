@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-// var apiKey;
+var apiKey;
 
 function getMatch() {
     console.log("getMatch");
@@ -8,7 +8,7 @@ function getMatch() {
 
 function getLeaguePosition() {
     return new Promise ((resolve, reject) => {
-        axios.get("https://euw1.api.riotgames.com/lol/league/v3/positions/by-summoner/" + this.id + "?api_key=" + this.apiKey)
+        axios.get("https://euw1.api.riotgames.com/lol/league/v3/positions/by-summoner/" + this.id + "?api_key=" + apiKey)
         .then(response => {
             this.leaguePosition = response.data;
             resolve (this);
@@ -19,36 +19,31 @@ function getLeaguePosition() {
 class Summoner {
     /* ------------CONSTRUCTOR---------- */
     constructor(key) {
-        if (key) this.apiKey = key;
+        if (key) apiKey = key;
     }
 
     create(infos) {
-        try {
-
             if (infos.summonerId == undefined && infos.summonerName == undefined && infos.accountId == undefined)
             throw (new Error("Wrong parameters while creating summoner."));
 
             return new Promise ((resolve, reject) => {
                 if (infos.summonerId) {
-                    axios.get("https://euw1.api.riotgames.com/lol/summoner/v3/summoners/" + infos.summonerId + "?api_key=" + this.apiKey)
+                    axios.get("https://euw1.api.riotgames.com/lol/summoner/v3/summoners/" + infos.summonerId + "?api_key=" + apiKey)
                     .then(response => {
                         resolve (this.fillData(response.data, infos))})
                     .catch(error => {throw (new Error(error));});
                 } else if (infos.summonerName) {
-                    axios.get("https://euw1.api.riotgames.com/lol/summoner/v3/summoners/by-name/" + infos.summonerName + "?api_key=" + this.apiKey)
+                    axios.get("https://euw1.api.riotgames.com/lol/summoner/v3/summoners/by-name/" + infos.summonerName + "?api_key=" + apiKey)
                     .then(response => {resolve (this.fillData(response.data, infos))})
                     .catch(error => {throw (new Error(error));});
                 } else if (infos.accountId) {
-                    axios.get("https://euw1.api.riotgames.com/lol/summoner/v3/summoners/by-account/" + infos.accountId + "?api_key=" + this.apiKey)
+                    axios.get("https://euw1.api.riotgames.com/lol/summoner/v3/summoners/by-account/" + infos.accountId + "?api_key=" + apiKey)
                     .then(response => {resolve (this.fillData(response.data, infos))})
                     .catch(error => {throw (new Error(error));});
                 } else {
                     return {error: "Wrong parameters"};
                 }
             })
-        } catch (error) {
-            console.log(error)
-        }
     }
 
     fillData(data, infos) {
@@ -62,7 +57,7 @@ class Summoner {
             this.getMatch = getMatch;
             this.getLeaguePosition = getLeaguePosition;
             if (infos.leaguePosition == true) {
-                axios.get("https://euw1.api.riotgames.com/lol/league/v3/positions/by-summoner/" + data.id + "?api_key=" + this.apiKey)
+                axios.get("https://euw1.api.riotgames.com/lol/league/v3/positions/by-summoner/" + data.id + "?api_key=" + apiKey)
                 .then(response => {
                     this.leaguePosition = response.data;
                     resolve (this);
@@ -73,5 +68,4 @@ class Summoner {
         });
     }
 }
-
 module.exports = Summoner;
