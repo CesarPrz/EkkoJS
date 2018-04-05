@@ -1,9 +1,33 @@
 const axios = require('axios');
 const Summoner = require('./summoner.js');
-
+const EventEmitter = require('events');
 var apiKey;
+var index = 0;
 
-function getSumonner(options) {
+function loop(timeout, playerId, gameWatcher) {
+    var game = new ActiveGame(apiKey);
+    game.create(playerId).then(activeGame => {
+        gameWatcher.emit('refresh', activeGame, index);
+    })
+
+    index = index + 1;
+    setTimeout(loop, timeout, timeout, playerId, gameWatcher);
+}
+
+class GameWatcher extends EventEmitter {
+    constructor(game, timeout) {
+        super();
+        this.game = game;
+        this.options = {timeout: timeout};
+        console.log("Not undefined")
+    }
+    start() {
+        loop(this.options.timeout, this.game.requestedPlayerId, this, index);
+    }
+
+};
+
+function getSummoner(options) {
     var newSumm = new Summoner(this.apiKey);
     return new Promise ((resolve, reject) => {resolve (newSumm.create(options))});
 }
@@ -18,6 +42,12 @@ function getRanks() {
     });
 }
 
+function watchGame(timeout) {
+    const gameWatcher = new GameWatcher(this, timeout);
+
+    return (gameWatcher);
+}
+
 class GameParticipant {
     constructor(participant) {
         this.teamId = participant.teamId;
@@ -30,7 +60,7 @@ class GameParticipant {
         this.summonerId = participant.summonerId;
         this.gameCustomisationObjects = participant.gameCustomisationObjects;
         this.perks = participant.perks;
-        this.getSumonner = getSumonner;
+        this.getSummoner = getSummoner;
         this.getRanks = getRanks;
     }
 }
@@ -57,9 +87,11 @@ class ActiveGame
                 this.gameType = data.gameType;
                 this.gameQueueConfigId = data.gameQueueConfigId;
                 this.players = data.participants.map(participant => participant = new GameParticipant(participant));
+                this.watch = watchGame;
+                this.requestedPlayerId = summonerId;
                 resolve (this);
             }).catch(error => {
-                resolve({status: error.response.status, message: error.response.statusText});
+                reject({status: error.response.status, message: error.response.statusText});
             });
         });
     }

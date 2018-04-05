@@ -35,7 +35,7 @@ class Summoner {
                 } else if (infos.summonerName) {
                     axios.get("https://euw1.api.riotgames.com/lol/summoner/v3/summoners/by-name/" + infos.summonerName + "?api_key=" + apiKey)
                     .then(response => {resolve (this.fillData(response.data, infos))})
-                    .catch(error => {throw (new Error(error));});
+                    .catch(error => {console.log(error);});
                 } else if (infos.accountId) {
                     axios.get("https://euw1.api.riotgames.com/lol/summoner/v3/summoners/by-account/" + infos.accountId + "?api_key=" + apiKey)
                     .then(response => {resolve (this.fillData(response.data, infos))})
